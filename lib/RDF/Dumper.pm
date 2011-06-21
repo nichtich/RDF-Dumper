@@ -1,7 +1,7 @@
 use strict;
 use warnings;
 package RDF::Dumper;
-# ABSTRACT: dump RDF data
+# ABSTRACT: dump RDF data objects
 
 use RDF::Trine::Serializer;
 use Scalar::Util 'blessed';
@@ -24,15 +24,28 @@ sub import {
 }
 
 sub rdfdump {
-    my $rdf = shift;
+    my ($ser, $rdf) = @_;
+
+    unless ( blessed $ser and $ser->isa('RDF::Trine::Serializer') ) {
+	    $rdf = $ser;
+        $ser = $RDF::Dumper::SERIALIZER;
+	}
 
     if ( blessed $rdf ) {
         # RDF::Trine::Serializer should have a more general serialize_ method
         if ( $rdf->isa('RDF::Trine::Model') ) {
-            return $RDF::Dumper::SERIALIZER->serialize_model_to_string( $rdf );
+            return $ser->serialize_model_to_string( $rdf );
         } elsif ( $rdf->isa('RDF::Trine::Iterator') ) {
-            return $RDF::Dumper::SERIALIZER->serialize_iterator_to_string( $rdf );
-        }
+            return $ser->serialize_iterator_to_string( $rdf );
+        } elsif ( $rdf->isa('RDF::Trine::Statement') ) {
+		    my $model = RDF::Trine::Model->temporary_model;
+			$model->add_statement( $rdf );
+            return $ser->serialize_model_to_string( $model );
+        } elsif ( $rdf->isa('RDF::Trine::Store') or
+                  $rdf->isa('RDF::Trine::Graph') ) {
+			$rdf = $rdf->get_statements;
+            return $ser->serialize_iterator_to_string( $rdf );
+		}
     }
 
     if ( ref $rdf ) {
@@ -41,7 +54,7 @@ sub rdfdump {
         $rdf = 'undef';
     }
 
-    croak "expected RDF::Trine::(Model|Iterator), got $rdf";
+    croak "expected Model/Iterator/Store/Statement/Graph but got $rdf";
 }
 
 1;
@@ -55,6 +68,8 @@ or L<RDF::Trine::Iterator>. See L<RDF::Trine::Serializer> for details.
 
   use RDF::Dumper $serializer_name, %options;
 
-  print rdfdump( $rdf )
+  print rdfdump( $rdf );              # use serializer created on import
+
+  print rdfdump( $serializer, $rdf ); # use another serializer
 
 =cut
