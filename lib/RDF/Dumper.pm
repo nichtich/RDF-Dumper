@@ -1,7 +1,7 @@
 use strict;
 use warnings;
 package RDF::Dumper;
-# ABSTRACT: dump RDF data objects
+# ABSTRACT: Dump RDF data objects
 
 use RDF::Trine::Serializer;
 use Scalar::Util 'blessed';
@@ -24,7 +24,7 @@ sub import {
 }
 
 sub rdfdump {
-    my $serializer; 
+    my $serializer;
 
     if ( blessed $_[0] and $_[0]->isa('RDF::Trine::Serializer') ) {
         $serializer = shift;
@@ -77,7 +77,7 @@ sub _rdfdump {
 
 Exports function 'rdfdump' to serialize RDF data objects given as instances of
 L<RDF::Trine::Model>, L<RDF::Trine::Iterator>, L<RDF::Trine::Statement>,
-L<RDF::Trine::Store>, or L<RDF::Trine::Graph>. See L<RDF::Trine::Serializer> 
+L<RDF::Trine::Store>, or L<RDF::Trine::Graph>. See L<RDF::Trine::Serializer>
 for details on RDF serializers. By default RDF is serialized as RDF/Turtle.
 
 =head1 SYNOPSIS
