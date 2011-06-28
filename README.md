@@ -1,16 +1,19 @@
-RDF::Dumper is a Perl module to stringify RDF data objects in readable form.
-Actually it is just a handy wrapper on RDF::Trine::Serializer.
-
-Usage
------
-Dump instances of RDF::Trine::Model and similar objects in RDF/Turtle:
+RDF::Dumper is a Perl module to stringify RDF data objects in readable form,
+which is handy for debugging and logging. Actually, the module is just a handy 
+wrapper on RDF::Trine::Serializer. You can use it like this:
 
     use RDF::Dumper;
-	print rdfdump( $rdf );
+    print rdfdump( $rdf_object );
 
-An alternative serialization format can be created on import:
-
+    # configure serializer (as singleton)
     use RDF::Dumper 'rdfxml', namespaces => { ... };
 
-Strings with RDF in some serialization are not considered as RDF data objects.
+    print rdfdump( $rdf );               # use serializer created on import
 
+    print rdfdump( $serializer, $rdf );  # use another serializer
+
+By the way, strings with RDF in some serialization are not considered as RDF 
+data objects, but strings that first need to be parsed to get RDF data.
+
+Feel free to submit patches, comments, and issues and/or fork this module at
+https://github.com/nichtich/RDF-Dumper

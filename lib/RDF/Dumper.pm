@@ -24,12 +24,21 @@ sub import {
 }
 
 sub rdfdump {
-    my ($ser, $rdf) = @_;
+    my $serializer; 
 
-    unless ( blessed $ser and $ser->isa('RDF::Trine::Serializer') ) {
-	    $rdf = $ser;
-        $ser = $RDF::Dumper::SERIALIZER;
-	}
+    if ( blessed $_[0] and $_[0]->isa('RDF::Trine::Serializer') ) {
+        $serializer = shift;
+    } else {
+        $serializer = $RDF::Dumper::SERIALIZER;
+    }
+
+    my @serialized = map { _rdfdump( $serializer, $_ ) } @_;
+
+    return join "\n", grep { defined $_ } @serialized;
+}
+
+sub _rdfdump {
+    my ($ser, $rdf) = @_;
 
     if ( blessed $rdf ) {
         # RDF::Trine::Serializer should have a more general serialize_ method
@@ -38,15 +47,18 @@ sub rdfdump {
         } elsif ( $rdf->isa('RDF::Trine::Iterator') ) {
             return $ser->serialize_iterator_to_string( $rdf );
         } elsif ( $rdf->isa('RDF::Trine::Statement') ) {
-		    my $model = RDF::Trine::Model->temporary_model;
-			$model->add_statement( $rdf );
+            my $model = RDF::Trine::Model->temporary_model;
+            $model->add_statement( $rdf );
             return $ser->serialize_model_to_string( $model );
         } elsif ( $rdf->isa('RDF::Trine::Store') or
                   $rdf->isa('RDF::Trine::Graph') ) {
-			$rdf = $rdf->get_statements;
+            $rdf = $rdf->get_statements;
             return $ser->serialize_iterator_to_string( $rdf );
-		}
+        }
+        # TODO: serialize patterns (in Notation3) and single nodes?
     }
+
+    # Sorry, this was no RDF object...
 
     if ( ref $rdf ) {
         $rdf = "$rdf";
@@ -55,18 +67,26 @@ sub rdfdump {
     }
 
     croak "expected Model/Iterator/Store/Statement/Graph but got $rdf";
+
+    return;
 }
 
 1;
 
 =head1 DESCRIPTION
 
-Exports function 'rdfdump' to serialize RDF data given as L<RDF::Trine::Model> 
-or L<RDF::Trine::Iterator>. See L<RDF::Trine::Serializer> for details.
+Exports function 'rdfdump' to serialize RDF data objects given as instances of
+L<RDF::Trine::Model>, L<RDF::Trine::Iterator>, L<RDF::Trine::Statement>,
+L<RDF::Trine::Store>, or L<RDF::Trine::Graph>. See L<RDF::Trine::Serializer> 
+for details on RDF serializers. By default RDF is serialized as RDF/Turtle.
 
 =head1 SYNOPSIS
 
-  use RDF::Dumper $serializer_name, %options;
+  use RDF::Dumper;
+  print rdfdump( $rdf_object );
+
+  # configure serializer (as singleton)
+  use RDF::Dumper 'rdfxml', namespaces => { ... };
 
   print rdfdump( $rdf );              # use serializer created on import
 
