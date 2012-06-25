@@ -7,7 +7,7 @@ use RDF::Trine::Serializer;
 use RDF::Trine::Parser;
 use utf8;
 
-use RDF::Dumper 'rdfxml';
+use RDF::Dumper rdfdump => { format => 'rdfxml' };
 
 my $parser = RDF::Trine::Parser->new('rdfxml');
 my $model = RDF::Trine::Model->temporary_model;
