@@ -32,10 +32,10 @@ sub _build {
             Data::Dumper::Dumper(@_);
         }
     }
-    
+
     my $format = delete($arg->{format}) || 'Turtle';
     my $default_serializer = RDF::Trine::Serializer->new($format, %$arg);
-        
+
     return sub {
         my $serializer = (blessed $_[0] and $_[0]->isa('RDF::Trine::Serializer'))
             ? shift
