@@ -30,6 +30,6 @@ __DATA__
          xmlns:dc="http://purl.org/dc/elements/1.1/">
   <rdf:Description rdf:about="http://de.wikipedia.org/wiki/Resource_Description_Framework">
     <dc:title>Resource Description Framework</dc:title>
-    <dc:publisher>Wikipedia - Die freie Enzyklopädie</dc:publisher>
+    <dc:publisher>Wikipedia - Die freie Enzyklopaedie</dc:publisher>
   </rdf:Description>
 </rdf:RDF>
