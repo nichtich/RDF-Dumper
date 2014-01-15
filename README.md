@@ -21,5 +21,5 @@ https://github.com/nichtich/RDF-Dumper
 # Status
 
 [![Build Status](https://travis-ci.org/gbv/RDF-Dumper.png)](https://travis-ci.org/gbv/RDF-Dumper)
-[![Coverage Status](https://coveralls.io/repos/gbv/RDF-Dumper/badge.png?branch=devel)](https://coveralls.io/r/gbv/RDF-Dumper?branch=devel)
+[![Coverage Status](https://coveralls.io/repos/gbv/RDF-Dumper/badge.png?branch=devel)](https://coveralls.io/r/gbv/RDF-Dumper)
 [![Kwalitee Score](http://cpants.cpanauthors.org/dist/RDF-Dumper.png)](http://cpants.cpanauthors.org/dist/RDF-Dumper)
